@@ -2,7 +2,7 @@ import { describe, it, expect } from 'vitest';
 import { existsSync, mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
-import { installSkill, resolveSkillName } from './skills.js';
+import { installSkill, listSkillDirs, parseSourceSpec, resolveSkillName } from './skills.js';
 
 function makeTmp(): string {
   return mkdtempSync(path.join(tmpdir(), 'hk-skills-'));
@@ -52,6 +52,58 @@ describe('skills install', () => {
       const bad = path.join(tmp, 'not-a-skill');
       mkdirSync(bad, { recursive: true });
       expect(() => installSkill({ source: bad, dir: tmp, agents: ['claude'] })).toThrow(/SKILL.md/);
+    } finally {
+      rmSync(tmp, { recursive: true, force: true });
+    }
+  });
+});
+
+describe('parseSourceSpec', () => {
+  it('本地路径识别为 local', () => {
+    const tmp = makeTmp();
+    try {
+      const p = path.join(tmp, 'skills', 'code-review');
+      mkdirSync(p, { recursive: true });
+      const s = parseSourceSpec(p);
+      expect(s.kind).toBe('local');
+    } finally {
+      rmSync(tmp, { recursive: true, force: true });
+    }
+  });
+
+  it('owner/repo[:sub] 解析为 git（GitHub 简写）', () => {
+    const s = parseSourceSpec('auki-zy/harness-template:skills/code-review');
+    expect(s.kind).toBe('git');
+    if (s.kind === 'git') {
+      expect(s.repoUrl).toBe('https://github.com/auki-zy/harness-template.git');
+      expect(s.ownerRepo).toBe('auki-zy/harness-template');
+      expect(s.sub).toBe('skills/code-review');
+    }
+  });
+
+  it('完整 https URL 解析为 git', () => {
+    const s = parseSourceSpec('https://github.com/auki-zy/harness-template.git');
+    expect(s.kind).toBe('git');
+    if (s.kind === 'git') expect(s.repoUrl).toContain('github.com');
+  });
+
+  it('未知格式抛错', () => {
+    expect(() => parseSourceSpec('justaword')).toThrow(/无法识别技能源/);
+  });
+});
+
+describe('listSkillDirs', () => {
+  it('候选目录自身是技能，或取其直接子级', () => {
+    const tmp = makeTmp();
+    try {
+      const repo = path.join(tmp, 'repo');
+      mkdirSync(path.join(repo, 'skills', 'code-review'), { recursive: true });
+      mkdirSync(path.join(repo, 'skills', 'debugging'), { recursive: true });
+      writeFileSync(path.join(repo, 'skills', 'code-review', 'SKILL.md'), '---\nname: code-review\n---\n', 'utf8');
+      writeFileSync(path.join(repo, 'skills', 'debugging', 'SKILL.md'), '---\nname: debugging\n---\n', 'utf8');
+
+      const sub = listSkillDirs(path.join(repo, 'skills'));
+      expect(sub.map((d) => path.basename(d)).sort()).toEqual(['code-review', 'debugging']);
     } finally {
       rmSync(tmp, { recursive: true, force: true });
     }

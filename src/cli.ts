@@ -1,13 +1,13 @@
 #!/usr/bin/env node
 import { initProject, runStackScaffold } from './init.js';
 import { doctorProject } from './doctor.js';
-import { AGENT_SKILL_DIRS, installSkill, type AgentId } from './skills.js';
+import { AGENT_SKILL_DIRS, installFromSource, type AgentId } from './skills.js';
 
 const USAGE = `harness-tool — 给新项目一键带上 harness 工程层
 
 用法：
   harness-tool init [dir] [--git] [--stack <vite-template>]
-  harness-tool skills install <skill> [dir] [--agents claude,cursor]
+  harness-tool skills install <source> [dir] [--agents claude,cursor] [--update]
   harness-tool doctor [dir]
 
 命令：
@@ -15,9 +15,10 @@ const USAGE = `harness-tool — 给新项目一键带上 harness 工程层
                       把内置模板快照（AGENTS/docs 治理/工程规范/skills 源）合并进 dir
                       （只新增、绝不覆盖；冲突列出；--git 额外执行 git init）
                       --stack：先用 create-vite 搭建代码脚手架再合并（如 react-ts/vue-ts）
-  skills install <skill> [dir] [--agents <list>]
-                      把一个技能目录（含 SKILL.md）复制安装进 dir 下各 agent 的技能目录
-                      （默认 agents=claude,cursor；已存在则跳过不覆盖）
+  skills install <source> [dir] [--agents <list>] [--update]
+                      从源安装技能：本地路径 / owner/repo[:sub] / https URL
+                      装进 dir（默认 "."）下各 agent 技能目录（默认 claude,cursor；已存在跳过）
+                      --update：重新拉取源并覆盖已装副本
   doctor [dir]        自检一个(harness)项目目录是否就绪：关键文件/占位符/机械配置/active plan/git
 
 参数：
@@ -28,6 +29,7 @@ const USAGE = `harness-tool — 给新项目一键带上 harness 工程层
   harness-tool init my-app --stack react-ts
   harness-tool init . --git
   harness-tool skills install ./skills/code-review my-app --agents claude,cursor
+  harness-tool skills install auki-zy/harness-template:skills/code-review my-app --update
   harness-tool doctor
 `;
 
@@ -60,6 +62,7 @@ function runSkills(args: string[]): number {
   }
   let source = '';
   let dir = '.';
+  let update = false;
   const agents: AgentId[] = [];
   for (let i = 1; i < args.length; i++) {
     const a = args[i];
@@ -79,6 +82,8 @@ function runSkills(args: string[]): number {
         agents.push(k);
       }
       i++;
+    } else if (a === '--update') {
+      update = true;
     } else if (a.startsWith('-')) {
       console.error(`未知参数：${a}\n`);
       console.error(USAGE);
@@ -90,16 +95,18 @@ function runSkills(args: string[]): number {
     }
   }
   if (!source) {
-    console.error('skills install 需要 <skill>（含 SKILL.md 的技能目录路径）\n');
+    console.error('skills install 需要 <source>：本地技能路径 或 owner/repo[:sub]\n');
     console.error(USAGE);
     return 1;
   }
   const targets: AgentId[] = agents.length > 0 ? agents : ['claude', 'cursor'];
   try {
-    const results = installSkill({ source, dir, agents: targets });
+    const { sourceLabel, results } = installFromSource({ source, dir, agents: targets, update });
+    console.log(`源：${sourceLabel}`);
     for (const r of results) {
-      const icon = r.installed ? ok('✔') : warn('↷');
-      console.log(`${icon} ${r.agent}: ${r.skillName} ${r.installed ? '已安装' : '已存在，跳过'} → ${r.target}`);
+      const icon = r.action === 'skipped' ? warn('↷') : r.action === 'updated' ? accent('⇅') : ok('✔');
+      const verb = r.action === 'skipped' ? '已存在，跳过' : r.action === 'updated' ? '已更新' : '已安装';
+      console.log(`${icon} ${r.agent}: ${r.skillName} ${verb} → ${r.target}`);
     }
     return 0;
   } catch (err) {
