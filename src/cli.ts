@@ -48,6 +48,7 @@ function printNextSteps(dir: string, created: number, conflicts: string[]): void
   console.log(`  ${accent('交给 AI')}：复制这句给你的 agent：`);
   console.log(`    ${subtle('“请按 AGENTS.md + BOOTSTRAP.md 落地，最后跑 harness-tool doctor 确认。”')}`);
   console.log(`  ${accent('自己动手')}：按 docs/BOOTSTRAP.md 操作。`);
+  console.log(`  ${subtle('装内置技能（如需）：node skills/install.mjs')}`);
 }
 
 function runSkills(args: string[]): number {

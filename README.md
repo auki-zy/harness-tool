@@ -34,7 +34,7 @@ harness-tool doctor              # 自检（会提示还缺哪些文档/配置�
 它会按仓库内 `AGENTS.md` 与 `docs/BOOTSTRAP.md` 完成落地——你不需要手把手教它。
 
 想叠前端栈？直接用 `--stack`（自动执行 `npm create vite@latest` 后再合并），或手动 `npm create vite@latest . -- --template react-ts` 后再 `harness-tool init`。
-项目里的技能安装：`harness-tool skills install ./skills/code-review my-app`（装到 `.claude/skills` / `.cursor/skills`；canonical 源留在 `skills/`）。
+技能安装：**模板内置技能**用项目内 `node skills/install.mjs` 一键装到 `.claude/skills`/`.cursor/skills`（幂等，不随 init 自动执行）；**外部技能源**用 `harness-tool skills install <路径>`（canonical 源留在 `skills/`）。
 
 ## 📖 命令参考
 
