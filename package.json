@@ -1,6 +1,6 @@
 {
   "name": "harness-tool",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "CLI：给新项目一键带上 harness 工程层（AGENTS/docs 治理/工程规范/skills 源目录）",
   "license": "MIT",
   "type": "module",

@@ -51,9 +51,12 @@ description: 一句话说明何时该用（触发条件尽量具体、可判定�
 
 ## 安装 / 发现
 
-- **一键安装**：`harness-tool skills install ./skills/<name> [--agents claude,cursor]`——把技能装到对应工具的技能目录（默认 `.claude/skills`、`.cursor/skills`；已存在跳过，幂等）。详见 [harness-tool](https://github.com/auki-zy/harness-tool) 的 `skills install`。
-- 手工方式：bootstrap 时按需复制到目标工具目录（详见 `docs/BOOTSTRAP.md` §技能）；仓库内 `skills/` 始终是源，项目里只放副本/引用。
+- **内置技能一键安装**：项目根执行 `node skills/install.mjs [--agents claude,cursor]`——把顶层内置技能装到 `.claude/skills`、`.cursor/skills`（幂等：已存在跳过；零依赖；不执行技能内容）。内置集是随模板快照分发的**稳定默认集**。
+- **需要持续更新的技能**：用 `harness-tool skills install <owner/repo[:path]> [--update]` 直接从源（如本模板仓库 `auki-zy/harness-template:skills/<name>`）安装/更新——不依赖模板快照。详见 [harness-tool](https://github.com/auki-zy/harness-tool)。
+- **草案技能**：放 `skills/experimental/<name>/`——`install.mjs` 不会把它装到 agent 技能目录（仅在仓库内作参考/试点，附 `EVIDENCE.md` 记录验证证据）；验证成熟后提升到顶层。
+- 仓库内 `skills/` 始终是源，各 agent 目录（`.claude/skills` 等）只是安装副本。
 - 发现路径：本 README 列当前技能清单；agent 开工时由 `AGENTS.md` 路由或工具视图引用。
+- 验证约定：技能有效性用固定任务基准验证（详见 [`skills/benchmark-guide.md`](benchmark-guide.md)）；experimental 技能须带 `EVIDENCE.md` 与 `benchmarks/` 证据。
 
 ## 当前技能清单
 
