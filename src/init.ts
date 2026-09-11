@@ -15,6 +15,9 @@ export interface InitResult {
   conflicts: string[];
 }
 
+/** 模板快照里不作为项目文件分发的条目（同步标记等） */
+const SKIP_FILES = new Set(['.template-version']);
+
 /** 递归列出目录下所有文件（返回相对路径，'/' 分隔，排序稳定） */
 function listFilesRecursive(root: string): string[] {
   const out: string[] = [];
@@ -24,7 +27,7 @@ function listFilesRecursive(root: string): string[] {
       const abs = path.join(dir, entry.name);
       if (entry.isDirectory()) {
         walk(abs, rel);
-      } else if (entry.isFile()) {
+      } else if (entry.isFile() && !SKIP_FILES.has(entry.name)) {
         out.push(rel);
       }
     }

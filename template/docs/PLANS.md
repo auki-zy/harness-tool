@@ -14,7 +14,6 @@
 ## 计划放哪
 
 - `docs/exec-plans/active/`：当前正在驱动工作的计划
-- `docs/exec-plans/completed/`：已完成但仍然要保留上下文的计划
 - `docs/exec-plans/tech-debt-tracker.md`：延期处理的债务与 follow-up
 
 ## 最少要包含的部分
@@ -31,4 +30,4 @@
 - 一份 active plan 同一时间应该只有一个清晰的当前步骤。
 - plan 要随着工作推进而更新，不要把它当成静态散文。
 - 只要某个决策改变了实现方向，就记到 plan 里。
-- 已完成的计划要移到 `completed/`，让后续 agent 仍然能发现历史上下文。
+- 已完成的计划要从 `active/` 移出（日志留在 `docs/exec-plans/` 作为历史上下文），让后续 agent 既不丢掉历史，也不会把过期计划当成当前工作。

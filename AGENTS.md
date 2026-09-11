@@ -30,9 +30,8 @@
 - `docs/TESTING.md`：测试策略（层级/mock 边界/覆盖率/UI 证据）
 - `docs/CI_CD.md`：CI 门禁蓝图与发布要点
 - `docs/REVIEW.md`：Code Review / PR 约定与反馈升级回路
-- `docs/AGENT_TOOLING.md`：AI 工具生态（AGENTS↔CLAUDE/.cursor）与 skills 组织
+- `docs/AGENT_TOOLING.md`：AI 工具生态（AGENTS↔CLAUDE/.cursor）与 skills 组织（能力内容统一放评测仓库 `harness-lab`，本仓库不放）
 - `docs/MEMORY.md`：长期记忆策略（分层/历史索引/收尾与卫生规则）
-- `skills/README.md`：技能源目录与入库标准（当前为空，实战验证后逐批入库）
 
 ## 工作约定
 

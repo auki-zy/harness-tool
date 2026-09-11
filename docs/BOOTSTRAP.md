@@ -46,8 +46,8 @@ typecheck && lint && test && build   # 全绿才可宣布完成
 - 一个新 agent（无聊天上下文）能否只靠仓库：读 AGENTS → ARCHITECTURE → 找到 active plan → 跑通验证？
 - 若不能，补文档或清单，而不是继续口头交代。
 
-## 7. 技能（可选）
+## 7. 能力（技能 / 子代理 / MCP，可选）
 
-- 模板技能源：`skills/README.md`（含入库标准与 SKILL.md 骨架；v1 为空，按需回填）。
-- 安装方式：把要用到的技能复制到对应工具目录（Cursor `.cursor/skills` / Claude Code `.claude/skills` / DSH 等），或就地引用 repo-local 技能；**仓库内 `skills/` 始终是源，项目里只放副本/引用，不回改源**。
-- 只装本项目实际会用到的技能，不要整目录全量复制。
+- 本仓库不放能力内容；能力统一放在评测仓库 `harness-lab`（已采纳的 `adopted/`、候选 `candidates/`，带来源与试用证据）。
+- 安装方式：`harness-tool skills install auki-zy/harness-lab:adopted/skills/<name> [项目]`（子代理 / MCP 同理）。
+- 只装本项目实际会用到的，不要整目录全量复制；装完在 `ARCHITECTURE.md` 的「横切接口」记一行。

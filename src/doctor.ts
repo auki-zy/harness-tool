@@ -46,7 +46,7 @@ export function doctorProject(dir: string): DoctorResult {
 
   // 2) 模板占位是否已填（warning）
   const placeholders: string[] = [];
-  for (const f of ['ARCHITECTURE.md', 'docs/PRODUCT_SENSE.md', 'docs/QUALITY_SCORE.md']) {
+  for (const f of ['ARCHITECTURE.md', 'docs/QUALITY_SCORE.md']) {
     if (exists(path.join(root, f)) && PLACEHOLDER_RE.test(read(path.join(root, f)))) {
       placeholders.push(f);
     }

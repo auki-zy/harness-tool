@@ -13,9 +13,20 @@ describe('initProject', () => {
     const tmp = makeTmp();
     try {
       const res = initProject({ dir: tmp });
-      for (const f of ['AGENTS.md', 'ARCHITECTURE.md', 'docs/BOOTSTRAP.md', 'docs/CODE_STANDARDS.md', 'skills/README.md']) {
+      for (const f of [
+        'AGENTS.md',
+        'ARCHITECTURE.md',
+        'docs/BOOTSTRAP.md',
+        'docs/PLANS.md',
+        'docs/QUALITY_SCORE.md',
+        'docs/exec-plans/tech-debt-tracker.md',
+      ]) {
         expect(existsSync(path.join(tmp, f)), f).toBe(true);
         expect(res.created).toContain(f);
+      }
+      // 模板不再携带能力内容与启动器
+      for (const gone of ['skills/README.md', 'agents/README.md', 'mcp/README.md', 'docs/CODE_STANDARDS.md']) {
+        expect(existsSync(path.join(tmp, gone)), gone).toBe(false);
       }
       expect(res.conflicts).toHaveLength(0);
     } finally {

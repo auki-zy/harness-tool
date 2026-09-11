@@ -57,8 +57,8 @@ function safeRepoName(repoUrl: string): string {
   return clean.replace(/[/\\:]/g, '__');
 }
 
-/** 浅克隆仓库到本地缓存；已存在且非 update 时复用 */
-function ensureRepo(repoUrl: string, update: boolean): string {
+/** 浅克隆仓库到本地缓存；已存在且非 update 时复用（agents/mcp 模块共用） */
+export function ensureRepo(repoUrl: string, update: boolean): string {
   const repoDir = path.join(gitCacheRoot(), safeRepoName(repoUrl));
   if (existsSync(repoDir) && !update) return repoDir;
   if (existsSync(repoDir)) rmSync(repoDir, { recursive: true, force: true });
@@ -72,17 +72,22 @@ function ensureRepo(repoUrl: string, update: boolean): string {
   return repoDir;
 }
 
-/** 收集候选目录下的技能目录（自身或直接子级含 SKILL.md） */
-export function listSkillDirs(candidate: string): string[] {
-  if (existsSync(path.join(candidate, 'SKILL.md'))) return [candidate];
+/** 收集候选目录下"含指定文件"的目录（自身或直接子级） */
+export function collectDirsWith(candidate: string, filename: string): string[] {
+  if (existsSync(path.join(candidate, filename))) return [candidate];
   const children = readdirSync(candidate, { withFileTypes: true })
     .filter((e) => e.isDirectory())
     .map((e) => path.join(candidate, e.name))
-    .filter((d) => existsSync(path.join(d, 'SKILL.md')));
+    .filter((d) => existsSync(path.join(d, filename)));
   if (children.length === 0) {
-    throw new Error(`该源下找不到含 SKILL.md 的技能目录：${candidate}`);
+    throw new Error(`该源下找不到含 ${filename} 的目录：${candidate}`);
   }
   return children;
+}
+
+/** 收集技能目录（含 SKILL.md） */
+export function listSkillDirs(candidate: string): string[] {
+  return collectDirsWith(candidate, 'SKILL.md');
 }
 
 /** 校验技能目录并解析技能名：SKILL.md frontmatter name 优先，否则目录名 */

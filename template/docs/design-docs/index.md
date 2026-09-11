@@ -4,7 +4,7 @@
 
 ## Accepted
 
-- `core-beliefs.md`：agent-first 的运行信念与持久项目规范
+- `[在这里添加第一份设计文档：决策、备选方案、为什么这么选]`
 
 ## Proposed
 
