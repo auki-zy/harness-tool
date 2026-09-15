@@ -64,7 +64,12 @@ harness-tool add frontend-design --from .   # 换源时才需要 --from（本地
 my-app/
 ├── AGENTS.md          # Agent 开工流程 + 路由地图
 ├── ARCHITECTURE.md    # 系统形态 / 领域地图 / 分层规则 / 工程约定
-└── docs/              # 治理骨架（BOOTSTRAP · PLANS · QUALITY_SCORE · product-specs · design-docs · exec-plans）
+└── docs/              # 治理骨架 + 工程规范基线
+    ├── BOOTSTRAP.md PLANS.md QUALITY_SCORE.md        # 落地清单 / 计划 / 质量
+    ├── CODE_STANDARDS.md TESTING.md SECURITY.md CI_CD.md   # 规范基线（按实际栈改写）
+    ├── FRONTEND.md MODULE_STRUCTURE.md DESIGN.md           # 前端栈契约 / 模块边界 / 界面约定
+    ├── RELIABILITY.md REVIEW.md PRODUCT_SENSE.md MEMORY.md AGENT_TOOLING.md
+    └── product-specs/ design-docs/ exec-plans/ references/
 ```
 
 装的是"规则与治理骨架"，不是代码脚手架——`package.json`、`src/` 等由你的技术栈脚手架负责，两者不冲突、互不覆盖。

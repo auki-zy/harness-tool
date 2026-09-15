@@ -7,13 +7,14 @@
 ## 1. 建仓
 
 - `npx harness-tool init <项目>`（推荐，合并而不覆盖），或把本模板当 GitHub Template 建仓。
-- 结果应该包含：`AGENTS.md`、`ARCHITECTURE.md`、`README.md`、`docs/`（BOOTSTRAP / PLANS / QUALITY_SCORE / product-specs / design-docs / exec-plans）。
+- 结果应该包含：`AGENTS.md`、`ARCHITECTURE.md`、`README.md`、`docs/`（BOOTSTRAP / PLANS / QUALITY_SCORE / 12 份工程规范基线 / references / product-specs / design-docs / exec-plans）。
 - `git init` 后第一次提交前，先做完第 2、3 步。
 
 ## 2. 必填文档（开写代码之前完成）
 
 - [ ] `ARCHITECTURE.md`：填系统形态（产品 / 主流程 / 运行面）、领域地图，并按实际栈改写「工程约定」一节
 - [ ] `docs/QUALITY_SCORE.md`：填产品领域与架构层两栏（未填写的项 agent 不得自行假设等级）
+- [ ] **工程规范基线按实际栈改写**：`CODE_STANDARDS` / `TESTING` / `FRONTEND` / `MODULE_STRUCTURE` / `SECURITY` / `CI_CD` / `DESIGN` / `REVIEW` / `RELIABILITY` / `MEMORY` / `AGENT_TOOLING` / `PRODUCT_SENSE`——用不上的删掉、缺的补上，别原样留着当摆设（它们给的是基线，不是每项都适用）
 - [ ] `docs/product-specs/`：写第一份用户可见行为规格（索引里挂一行）
 - [ ] `docs/exec-plans/active/`：建第一份执行计划（格式见 `docs/PLANS.md`）
 - [ ] `docs/design-docs/`：把"为什么这么选"的第一个决策写下来（可选，但一旦有争议就补）

@@ -1,6 +1,6 @@
 # harness-template
 
-**agent-first 工程化仓库模板** —— 一套精简的"开工即规范"基线：AGENTS 路由 + 系统地图 + 计划/质量/规格文档骨架，让你的每个项目从一开始就具备 AI 可开工、可验证、可长期演化的工程环境。
+**agent-first 工程化仓库模板** —— 一套"开工即规范"的基线：AGENTS 路由 + 系统地图 + 计划/质量/规格骨架 + **12 份工程规范文档**（代码规范 / 测试 / 安全 / CI / 前端 / 模块边界 / 设计 / 记忆 / 评审 / 可靠性 / 产品判断 / agent 工具视图），让你的每个项目从一开始就具备 AI 可开工、可验证、可长期演化的工程环境。
 
 > 理念出处：[OpenAI《Harness Engineering》](https://openai.com/index/harness-engineering/) 与 [walkinglabs/learn-harness-engineering](https://github.com/walkinglabs/learn-harness-engineering)。
 
@@ -32,6 +32,19 @@ my-app/
     ├── BOOTSTRAP.md                # 开新项目的必填 / 必装 / 必跑清单
     ├── PLANS.md                    # 计划生命周期
     ├── QUALITY_SCORE.md            # 领域与分层健康度（每轮更新）
+    ├── CODE_STANDARDS.md           # 代码规范（命名 / 结构 / 错误处理 / 日志）
+    ├── TESTING.md                  # 测试分层与"什么算测过"
+    ├── SECURITY.md                 # 密钥 / 权限档位 / 危险操作
+    ├── CI_CD.md                    # 流水线与门禁
+    ├── FRONTEND.md                 # 前端栈契约
+    ├── MODULE_STRUCTURE.md         # 模块边界与依赖方向
+    ├── DESIGN.md                   # 界面与交互约定
+    ├── MEMORY.md                   # 跨会话记忆与交接
+    ├── AGENT_TOOLING.md            # 各 agent 工具的薄视图 + 技能登记
+    ├── RELIABILITY.md              # 稳定性与可观测
+    ├── REVIEW.md                   # 评审口径
+    ├── PRODUCT_SENSE.md            # 产品判断与取舍
+    ├── references/                 # 面向模型的外部参考（*-llms.txt 等，按需抓取）
     ├── product-specs/              # 用户可见行为规格
     ├── design-docs/                # 设计决策与理由
     └── exec-plans/
@@ -39,7 +52,7 @@ my-app/
         └── tech-debt-tracker.md    # 延期处理的债务
 ```
 
-需要更多文档时按需新增一份小的（比如 `docs/DATA.md`、`docs/DEPLOY.md`），并在 `AGENTS.md` 路由地图里挂一行——不要预先生成一堆用不上的规范。
+规范文档是**基线**：开了新项目就按实际栈把它们改写成"这个项目的规矩"（用不上的删掉、缺的补上），别原样留着当摆设。业务向的文档（比如 `docs/DATA.md`、`docs/DEPLOY.md`）等真有内容时再新增一份小的，并在 `AGENTS.md` 路由地图里挂一行 —— 不要预先生成一堆空壳。
 
 ## 能力从哪来
 

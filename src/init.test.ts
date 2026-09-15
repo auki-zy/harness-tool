@@ -20,12 +20,16 @@ describe('initProject', () => {
         'docs/PLANS.md',
         'docs/QUALITY_SCORE.md',
         'docs/exec-plans/tech-debt-tracker.md',
+        // 工程规范基线（2026-09-15 放回模板）：断言存在，免得哪天又被"精简"掉而没人发现
+        'docs/CODE_STANDARDS.md',
+        'docs/TESTING.md',
+        'docs/SECURITY.md',
       ]) {
         expect(existsSync(path.join(tmp, f)), f).toBe(true);
         expect(res.created).toContain(f);
       }
-      // 模板不再携带能力内容与启动器
-      for (const gone of ['skills/README.md', 'agents/README.md', 'mcp/README.md', 'docs/CODE_STANDARDS.md']) {
+      // 模板不再携带**能力内容**（技能 / 子代理 / MCP 的分发目录）：那些在评测仓库 harness-lab 里
+      for (const gone of ['skills/README.md', 'agents/README.md', 'mcp/README.md']) {
         expect(existsSync(path.join(tmp, gone)), gone).toBe(false);
       }
       expect(res.conflicts).toHaveLength(0);

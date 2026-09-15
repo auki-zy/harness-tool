@@ -24,6 +24,8 @@
 - `docs/QUALITY_SCORE.md`：产品领域与架构层健康度
 - `docs/product-specs/`：用户可见行为规格与验收标准
 - `docs/design-docs/`：设计决策（accepted / proposed / deprecated）
+- `docs/` 下的**工程规范基线**（按实际栈改写，不要把用不上的留着也不要凭空删）：`CODE_STANDARDS`（代码规范）、`TESTING`（测试分层与"什么算测过"）、`SECURITY`（密钥 / 权限档位 / 危险操作）、`CI_CD`（流水线门禁）、`FRONTEND`（前端栈契约）、`MODULE_STRUCTURE`（模块边界与依赖方向）、`DESIGN`（界面与交互约定）、`MEMORY`（跨会话记忆与交接）、`AGENT_TOOLING`（各 agent 工具的薄视图 + 技能登记）、`RELIABILITY`（稳定性与可观测）、`REVIEW`（评审口径）、`PRODUCT_SENSE`（产品判断与取舍）
+- `docs/references/`：面向模型阅读的外部参考材料（`*-llms.txt`、外部指南），按需抓取
 
 ## 能力从哪来（技能 / 子代理 / MCP）
 
