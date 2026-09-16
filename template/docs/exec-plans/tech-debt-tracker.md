@@ -6,4 +6,4 @@
 
 | 日期 | 区域 | 债务 | 为什么延后 | 风险 | 下次触发点 |
 |------|------|------|-----------|------|-----------|
-| 2026-09-15 | 跨仓库（`harness-tool`） | 恢复 12 份工程规范文档后，`harness-tool/src/init.test.ts` 里那条"模板不再携带 …`docs/CODE_STANDARDS.md`"的断言会失败（实测：`expected true to be false`） | 这次只动模板仓库；写死"哪些文件不该存在"的断言应该跟着模板内容改，改测试是另一个仓库的改动 | CI 每日同步快照后，`harness-tool` 的验证会红（不影响使用者，但会淹没真正的问题） | 下次动 `harness-tool` 时（或 CI 第一次报红时）把那条断言改成"只断言 `skills/` `agents/` `mcp/` 不再携带" |
+| YYYY-MM-DD | `[area]` | `[debt]` | `[reason]` | `[risk]` | `[when to revisit]` |
