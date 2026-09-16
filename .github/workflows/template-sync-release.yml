@@ -1,11 +1,19 @@
 name: template-sync-release
 
 # harness-template 有更新时，自动把最新模板同步进本包并发布新版本。
-# 触发：每日定时 + 手动运行（Actions → Run workflow）。
+# 触发：每日定时 + 手动运行（Actions → Run workflow；勾 force 可强制重新同步）。
+#
+# 读日志的要点：**"无更新"是正常结果，不是没触发**——本 workflow 每天都跑，
+# 模板没变时它会跳过 bump/publish/commit（"No update" 那一步会把原因写进 job summary）。
 on:
   schedule:
     - cron: '0 2 * * *' # 每天 02:00 UTC
-  workflow_dispatch: {}
+  workflow_dispatch:
+    inputs:
+      force:
+        description: 忽略快照标记，强制重新同步（模板没变时也能走完整发布链路）
+        type: boolean
+        default: false
 
 permissions:
   contents: write
@@ -32,9 +40,18 @@ jobs:
 
       - name: Compare & sync template snapshot
         id: sync
-        run: npm run sync:template
+        run: |
+          if [ "${{ inputs.force }}" = "true" ]; then
+            echo "force=true：忽略快照标记，强制重新同步"
+            npm run sync:template -- --force
+          else
+            npm run sync:template
+          fi
         env:
           HK_UPSTREAM_REPO: auki-zy/harness-template
+          # 查上游 commit 时带上 token：匿名调用只有 60 次/小时，runner 是共享 IP，容易撞限流
+          # （本地脚本也读这个变量：GITHUB_TOKEN / HK_TOKEN）
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       # sync-template 输出为 0 且无文件变化时 = 无更新 → 直接结束
       - name: Detect changes
@@ -48,7 +65,18 @@ jobs:
 
       - name: No update
         if: steps.changes.outputs.changed == 'false'
-        run: echo "模板无更新，跳过发布"
+        run: |
+          SNAPSHOT=$(cat template/.template-version 2>/dev/null || echo '(没有快照标记)')
+          {
+            echo "### 模板无更新：跳过发布"
+            echo ""
+            echo "- 本地快照标记：\`${SNAPSHOT}\`"
+            echo "- 结论：harness-template 的 main 与快照一致，本次**没有提交、没有版本号变更、没有发布**。"
+            echo "  这是正常结果（这次调度确实没什么可做的），不是「没触发」——本 workflow 每天都跑。"
+            echo "- 想强制走一遍完整链路（bump → 五件套 → npm publish → commit & tag）："
+            echo "  Actions → 本 workflow → **Run workflow** → 勾上 \`force\`。"
+          } >> "$GITHUB_STEP_SUMMARY"
+          echo "模板无更新，跳过发布"
 
       - name: Version bump (patch)
         if: steps.changes.outputs.changed == 'true'
@@ -78,6 +106,18 @@ jobs:
           VERSION=$(node -p "require('./package.json').version")
           git add template package.json package-lock.json
           git commit -m "chore: 同步 harness-template 模板快照并发布 v${VERSION} [skip ci]"
+          # 推之前先跟上远端：本 workflow 要跑几十秒，期间任何一次别的推送都会让最后一步 push 被拒
+          # （原来没有这一步——手动触发正好撞上别人的推送就会白跑一遍）。
+          # 冲突让它失败、重新跑：宁可重跑，也不要把谁的版本号悄悄盖掉。
+          git fetch origin main
+          git rebase origin/main
           git tag "v${VERSION}"
           git push origin main
           git push origin "v${VERSION}"
+          {
+            echo "### 已发布 v${VERSION}"
+            echo ""
+            echo "- 模板快照：\`$(cat template/.template-version)\`"
+            echo "- npm：\`harness-tool@${VERSION}\`"
+            echo "- tag：\`v${VERSION}\`"
+          } >> "$GITHUB_STEP_SUMMARY"
